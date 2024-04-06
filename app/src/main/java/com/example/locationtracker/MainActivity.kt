@@ -11,10 +11,14 @@ import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.locationtracker.TrackerApp.Companion.realm
+import com.example.locationtracker.Utils.hideSystemUI
 import com.example.locationtracker.databinding.ActivityMainBinding
 import com.example.locationtracker.realm.UserInfo
 import com.example.locationtracker.service.LocationService
@@ -32,13 +36,17 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: AppViewModel by viewModels()
     private lateinit var wakeLock: PowerManager.WakeLock
-
+    private lateinit var navController: NavController
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        window.hideSystemUI()
+        navController =
+            (supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController
 
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(
