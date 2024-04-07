@@ -29,7 +29,7 @@ object AppPreferences {
     }
 
     var loginUuid: String?
-        get() = preferences.getString(LOGIN_UUID.first, "661108fc814b4f21a382a0f3")
+        get() = preferences.getString(LOGIN_UUID.first, null)
         set(value) = preferences.edit().putString(LOGIN_UUID.first, value).apply()
 
 }

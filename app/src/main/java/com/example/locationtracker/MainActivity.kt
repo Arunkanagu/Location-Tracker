@@ -46,11 +46,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var navController: NavController
 
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
-
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +66,8 @@ class MainActivity : AppCompatActivity() {
                 this,
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
                 ),
                 0
             )
@@ -87,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             userList.forEach { userInfo ->
                 Log.i(
                     TAG,
-                    "User ID: ${userInfo._id}, Name: ${userInfo.userName}, Email: ${userInfo.userEmail}, Password: ${userInfo.password}"
+                    "User : ${userInfo.userName}, login : ${userInfo.loginState}, datetime : ${userInfo.lastLoginDate} "
                 )
             }
             Log.i(TAG, "__________________________________________________")
@@ -100,16 +96,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
             Log.i(TAG, "__________________________________________________")
-        }
-        GlobalScope.launch {
-            realm.write {
-                val userInfo = UserInfo().apply {
-                    userEmail = "arun@gamil.com"
-                    userName = "arun"
-                    password = "12341234"
-                }
-                copyToRealm(userInfo, updatePolicy = UpdatePolicy.ALL)
-            }
         }
 
     }
@@ -130,18 +116,15 @@ class MainActivity : AppCompatActivity() {
             val serviceIntent = Intent(this, LocationService::class.java)
             startService(serviceIntent)
         }
-
         wakeLock.acquire(60 * 60 * 1000L)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val INTERVAL_MILLIS :Long= 10000
     }
 }

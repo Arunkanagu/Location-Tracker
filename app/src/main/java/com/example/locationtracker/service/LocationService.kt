@@ -102,6 +102,6 @@ class LocationService : Service() {
 
     companion object {
         private const val TAG = "LocationService"
-        private const val INTERVAL_MILLIS :Long= 900000
+        private const val INTERVAL_MILLIS :Long= 10000//900000
     }
 }

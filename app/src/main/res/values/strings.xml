@@ -2,4 +2,16 @@
     <string name="app_name">LocationTracker</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_title">Login to your Acount</string>
+    <string name="enter_the_email">Email</string>
+    <string name="enter_the_pass">Password</string>
+    <string name="log_in_str">Sign In</string>
+    <string name="goto_sign_up_1">Don\'t have an Anccout?</string>
+    <string name="goto_sign_up">Sign up</string>
+    <string name="sign_up_str">Sign up</string>
+    <string name="goto_log_in">Sign in</string>
+    <string name="goto_log_in_1">Already have a Account!</string>
+    <string name="signup_title">Create your Account</string>
+    <string name="enter_the_confirm_pass">Confirm Password</string>
+    <string name="enter_name">Name</string>
 </resources>
