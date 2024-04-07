@@ -10,66 +10,56 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.locationtracker.MainActivity
 import com.example.locationtracker.TrackerApp
 import com.example.locationtracker.commen.AppPreferences
 import com.example.locationtracker.realm.LocationInfo
 import com.example.locationtracker.realm.UserInfo
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import io.realm.kotlin.UpdatePolicy
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class LocationService : Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var handler: Handler
-    private val interval: Long = 1 * 1 * 10 * 1000 // 15 minutes in milliseconds
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback //15 minutes in milliseconds
     private var isServiceRunning = false
 
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Service onCreate")
         isServiceRunning = true
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        handler = android.os.Handler(Looper.getMainLooper())
-        handler.postDelayed(locationRunnable, interval)
-    }
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+            .setIntervalMillis(INTERVAL_MILLIS) // Sets the interval for location updates
+            .setMinUpdateIntervalMillis(INTERVAL_MILLIS / 2) // Sets the fastest allowed interval of location updates.
+            .setWaitForAccurateLocation(false) // Want Accurate location updates make it true or you get approximate updates
+            .setMaxUpdateDelayMillis(10) // Sets the longest a location update may be delayed.
+            .build()
 
-
-    private val locationRunnable = object : Runnable {
-        override fun run() {
-            if (ActivityCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.d(TAG, "PERMISSION_NOT_GRANTED")
-                return
-            }
-
-
-            Log.d(TAG, "PERMISSION_GRANTED")
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                location?.let {
-                    // Print the location here
-                    var loginID = AppPreferences.loginUuid
-                    Log.d(
-                        TAG,
-                        "loginID: $loginID Latitude: ${it.latitude}, Longitude: ${it.longitude}"
-                    )
-                    GlobalScope.launch() {
-                        if (loginID != null) {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val id = AppPreferences.loginUuid
+                if (id != null){
+                    locationResult.locations.forEach {
+                        Log.d(TAG, "onLocationResult: List Item ${it.latitude},${it.longitude},${it.altitude},")
+                        GlobalScope.launch {
                             TrackerApp.realm.write {
                                 val locationInfo = LocationInfo().apply {
-                                    userId = loginID
+                                    userId = id
                                     latitude = it.latitude
                                     longitude = it.longitude
                                 }
@@ -77,21 +67,41 @@ class LocationService : Service() {
                             }
                         }
                     }
-
                 }
             }
-            handler.postDelayed(this, interval)
         }
+        startLocationUpdates()
+    }
+
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
         isServiceRunning = false
         Log.d(TAG, "Service onDestroy")
-        handler.removeCallbacks(locationRunnable)
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
+
+    fun isRunning(): Boolean {return isServiceRunning}
 
     companion object {
         private const val TAG = "LocationService"
+        private const val INTERVAL_MILLIS :Long= 900000
     }
 }
