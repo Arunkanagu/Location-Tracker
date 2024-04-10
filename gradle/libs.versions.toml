@@ -19,6 +19,8 @@ realmPlugin = "1.14.1"
 libraryBase = "1.14.1"
 securityCrypto = "1.1.0-alpha06"
 playServicesLocation = "21.2.0"
+playServicesMaps = "18.2.0"
+googleMapsServices = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +41,8 @@ hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-comp
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+google-maps-services = { group = "com.google.maps", name = "google-maps-services", version.ref = "googleMapsServices" }
 
 
 [plugins]

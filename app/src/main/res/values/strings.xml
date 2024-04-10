@@ -14,4 +14,8 @@
     <string name="signup_title">Create your Account</string>
     <string name="enter_the_confirm_pass">Confirm Password</string>
     <string name="enter_name">Name</string>
+    <string name="account">Account</string>
+    <string name="add_account">Add Account</string>
+    <string name="current_account">Current Account</string>
+    <string name="play_back">Play Back</string>
 </resources>
