@@ -3,6 +3,8 @@ import android.Manifest
 import android.app.*
 import android.content.*
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.*
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,7 +27,7 @@ class LocationForegroundService : Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback //15 minutes in milliseconds
+    private lateinit var locationCallback: LocationCallback
     private var isServiceRunning = false
     private lateinit var permissions: Array<String>
     override fun onCreate() {
@@ -38,7 +40,7 @@ class LocationForegroundService : Service() {
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
             .setIntervalMillis(INTERVAL_MILLIS) // Sets the interval for location updates
             .setMinUpdateIntervalMillis(INTERVAL_MILLIS / 2) // Sets the fastest allowed interval of location updates.
-            .setWaitForAccurateLocation(true) // Want Accurate location updates make it true or you get approximate updates
+            .setWaitForAccurateLocation(false) // Want Accurate location updates make it true or you get approximate updates
             .setMaxUpdateDelayMillis(10) // Sets the longest a location update may be delayed.
             .build()
 
@@ -134,6 +136,22 @@ class LocationForegroundService : Service() {
 
     fun isRunning(): Boolean {return isServiceRunning}
 
+
+    fun isInternetAvailable(context: Context = TrackerApp.instance): Boolean {
+        var result = false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+            connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+        return result
+    }
 
 
     companion object {
