@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.HomeFragment">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".18" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/dark_blue"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/guideline31"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="12dp"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="0dp"
+                android:paddingVertical="0dp"
+                android:paddingBottom="4dp"
+                android:layout_weight=".8"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:letterSpacing=".02"
+                android:textStyle="bold"
+                android:text="Location Tracker"
+                android:textColor="@color/gray_blue"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/account"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_circle"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:padding="0dp"
+                android:text="A"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/not_permission"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/top_radius"
+        android:orientation="vertical"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline32">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Enable location access for optimal app functionality."
+            android:textColor="@color/mid_blue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="30dp"
+            android:letterSpacing=".02"
+            />
+    </LinearLayout>
+  <LinearLayout
+
+      android:id="@+id/have_permission"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/top_radius"
+        android:orientation="vertical"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline32">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/location_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:itemCount="120"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/layout_location_item" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Data is Empty"
+            android:textColor="@color/mid_blue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="30dp"
+            android:letterSpacing=".02"
+            />
+
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.13" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

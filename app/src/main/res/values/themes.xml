@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.LocationTracker" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.LocationTracker" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">shortEdges</item>
+
     </style>
 
-    <style name="Theme.LocationTracker" parent="Base.Theme.LocationTracker" />
+    <style name="Theme.LocationTracker" parent="Base.Theme.LocationTracker" >
+
+    </style>
 </resources>

@@ -7,7 +7,27 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.locationtracker.ui.SplashFragment"
+        android:name="dev.nura.locationtracker.ui.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="dev.nura.locationtracker.ui.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/mapViewFragment"
+        android:name="dev.nura.locationtracker.ui.MapViewFragment"
+        android:label="fragment_map_view"
+        tools:layout="@layout/fragment_map_view" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dev.nura.locationtracker.ui.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="dev.nura.locationtracker.ui.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
 </navigation>

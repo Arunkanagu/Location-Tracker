@@ -7,17 +7,24 @@ plugins {
 }
 
 android {
-    namespace 'com.example.locationtracker'
+    namespace 'dev.nura.locationtracker'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.locationtracker"
+        applicationId "dev.nura.locationtracker"
         minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = "LocationTracker-${variant.versionName}-Debug.apk"
+        }
     }
 
     buildTypes {
@@ -58,6 +65,8 @@ dependencies {
     implementation libs.library.base
     implementation libs.androidx.security.crypto
     implementation libs.play.services.location
+    implementation libs.play.services.maps
+    implementation libs.google.maps.services
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
