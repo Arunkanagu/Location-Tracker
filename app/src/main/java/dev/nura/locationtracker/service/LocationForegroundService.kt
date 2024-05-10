@@ -1,4 +1,5 @@
 package dev.nura.locationtracker.service
+
 import android.Manifest
 import android.app.*
 import android.content.*
@@ -6,7 +7,9 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.*
+import android.provider.Settings
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -32,6 +35,7 @@ class LocationForegroundService : Service() {
     private lateinit var permissions: Array<String>
     override fun onCreate() {
         super.onCreate()
+
         startForeground(1, createNotification())
         Log.d(TAG, "Service onCreate")
         isServiceRunning = true
@@ -48,9 +52,12 @@ class LocationForegroundService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val id = AppPreferences.loginUuid
                 Log.d(TAG, "onLocationResult: AppPreferences Id $id")
-                if (id != null){
+                if (id != null) {
                     locationResult.locations.forEach {
-                        Log.d(TAG, "onLocationResult: List Item ${it.latitude},${it.longitude},${it.altitude},")
+                        Log.d(
+                            TAG,
+                            "onLocationResult: List Item ${it.latitude},${it.longitude},${it.altitude},"
+                        )
                         CoroutineScope(Dispatchers.Main).launch {
                             TrackerApp.realm.write {
                                 val locationInfo = LocationInfo().apply {
@@ -70,6 +77,22 @@ class LocationForegroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return START_STICKY
+    }
+
+    private fun requestNotificationPermission() {
+        // You can open notification settings screen to let the user grant permission
+        val intent = Intent().apply {
+            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
+    }
+    private fun isNotificationPermissionGranted(): Boolean {
+        // Check if the app has been granted notification permission
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager.areNotificationsEnabled()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -95,7 +118,8 @@ class LocationForegroundService : Service() {
     }
 
     private fun createNotificationChannel(channelId: String, channelName: String): String {
-        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
+        val channel =
+            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
         return channelId
@@ -114,14 +138,18 @@ class LocationForegroundService : Service() {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             )
         }
-        Log.w(TAG, "startLocationUpdates: ${permissions.all {
-            checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
-        }}" )
+        Log.w(
+            TAG, "startLocationUpdates: ${
+                permissions.all {
+                    checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+                }
+            }"
+        )
         if (permissions.any {
                 checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
             }
         ) {
-            Log.e(TAG, "startLocationUpdates: PERMISSION NOT GRANTED" )
+            Log.e(TAG, "startLocationUpdates: PERMISSION NOT GRANTED")
             return
         }
         fusedLocationClient.requestLocationUpdates(
@@ -131,10 +159,12 @@ class LocationForegroundService : Service() {
         )
 
 
-        Log.e(TAG, "startLocationUpdates: PERMISSION GRANTED" )
+        Log.e(TAG, "startLocationUpdates: PERMISSION GRANTED")
     }
 
-    fun isRunning(): Boolean {return isServiceRunning}
+    fun isRunning(): Boolean {
+        return isServiceRunning
+    }
 
 
     fun isInternetAvailable(context: Context = TrackerApp.instance): Boolean {
@@ -156,6 +186,6 @@ class LocationForegroundService : Service() {
 
     companion object {
         private val TAG = "LocationForegroundService"
-        private const val INTERVAL_MILLIS :Long= 900000
+        private const val INTERVAL_MILLIS: Long = 900000
     }
 }

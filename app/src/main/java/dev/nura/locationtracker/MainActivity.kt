@@ -84,20 +84,18 @@ class MainActivity : AppCompatActivity() {
 
         checkLocationPermission()
 
-        val serviceIntent = Intent(this, LocationForegroundService::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
+
 
 
     }
 
-    private fun checkLocationPermission() {
+    fun checkLocationPermission() {
 
         permissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             )
         } else {
             arrayOf(
@@ -130,6 +128,7 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.haveAllPermissions.observe(this){
+            Log.d(TAG, "checkLocationPermission: $it")
             if (it){
                 restartService()
             }
@@ -166,15 +165,19 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_LOCATION -> {
-                if (grantResults.any { it!= PackageManager.PERMISSION_GRANTED }) {
-                    //
-                    viewModel.haveAllPermissions.postValue(false)
-                    Log.w(TAG, "onRequestPermissionsResult: Permission denied, handle this scenario (show a message, etc.)" )
-                    openAppSettings1()
-                } else {
-                    //
-                    viewModel.haveAllPermissions.postValue(true)
-                    Log.w(TAG, "onRequestPermissionsResult: Permission granted, perform the action that requires this permission", )
+                grantResults.forEach { Log.d(TAG, "onRequestPermissionsResult: $it") }
+                Log.d(TAG, "onRequestPermissionsResult: ${grantResults.any { it!= PackageManager.PERMISSION_GRANTED }}")
+                if (grantResults.isNotEmpty()){
+                    if (grantResults.any { it!= PackageManager.PERMISSION_GRANTED }) {
+                        //
+                        viewModel.haveAllPermissions.postValue(false)
+                        Log.w(TAG, "onRequestPermissionsResult: Permission denied, handle this scenario (show a message, etc.)" )
+                        openAppSettings1()
+                    } else {
+                        //
+                        viewModel.haveAllPermissions.postValue(true)
+                        Log.w(TAG, "onRequestPermissionsResult: Permission granted, perform the action that requires this permission", )
+                    }
                 }
             }
         }
@@ -201,7 +204,10 @@ class MainActivity : AppCompatActivity() {
 
 
     fun restartService() {
-      /*  val serviceIntent = Intent(TrackerApp.instance,LocationService::class.java)
+        Log.d(TAG, "restartService: ")
+        val serviceIntent = Intent(this, LocationForegroundService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+        /*  val serviceIntent = Intent(TrackerApp.instance,LocationService::class.java)
         if (!LocationService().isRunning()) {
             startService(serviceIntent)
 

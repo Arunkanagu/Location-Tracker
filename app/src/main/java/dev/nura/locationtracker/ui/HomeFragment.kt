@@ -59,7 +59,9 @@ class HomeFragment : Fragment() {
                 }
             })
 
-        (activity as MainActivity).restartService()
+
+
+        (activity as MainActivity).checkLocationPermission()
 
         viewModel.haveAllPermissions.observe(viewLifecycleOwner){
             Log.i(TAG, "onViewCreated: haveAllPermissions = $it")
@@ -126,7 +128,7 @@ class HomeFragment : Fragment() {
         logInList =
             userList.filter { it.loginState && it._id.toString() != AppPreferences.loginUuid }
 
-        (activity as MainActivity).restartService()
+        (activity as MainActivity).checkLocationPermission()
         Log.w(TAG, "onViewCreated: userLiveData ${logInList.size}")
     }
 
@@ -142,10 +144,11 @@ class HomeFragment : Fragment() {
 
     private fun showDialog(userList: List<UserInfo>) {
         try {
+
             val builder = AlertDialog.Builder(requireContext())
             val bindingAlert = DailogUserSwitchBinding.inflate(layoutInflater)
             builder.setView(bindingAlert.root)
-            //builder.setCancelable(false)
+            builder.setCancelable(false)
             alertDialog = builder.create()
             with(bindingAlert) {
                 val currentAcc =
